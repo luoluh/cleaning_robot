@@ -354,10 +354,10 @@ void CleaningPathPlanning::writeResult(Mat resultmat,vector<cellIndex> pathVec)
         if(sqrt((initpoint.x-cupoint.x)*(initpoint.x-cupoint.x)+(initpoint.y-cupoint.y)*(initpoint.y-cupoint.y))>2)
         {
             //line(resultmat,initpoint,cupoint,Scalar(0,255,0),0.3,8);
-            line(resultmat,initpoint,cupoint,Scalar(0,255,0),4,8);
+            line(resultmat,initpoint,cupoint,Scalar(0,255,0),3,8);
 
         }
-        else line(resultmat,initpoint,cupoint,Scalar(0,0,255),6);
+        else line(resultmat,initpoint,cupoint,Scalar(0,0,255),5);
         //line(resultmat,initpoint,cupoint,Scalar(0,0,255),0.5);
 
         initpoint = cupoint;
@@ -378,7 +378,7 @@ void CleaningPathPlanning::writeResult(Mat resultmat,vector<cv::Point2i> pathVec
     for(i = 1; i<pathVec.size();i++)
     {
         Point cupoint = pathVec[i];
-        line(resultmat,initpoint,cupoint,Scalar(0,0,255),6);
+        line(resultmat,initpoint,cupoint,Scalar(0,0,255),5);
         //line(resultmat,initpoint,cupoint,Scalar(0,0,255),0.5);
         initpoint = cupoint;
         //std::cout<<"X: "<<cupoint.x<<","<<"Y:"<<cupoint<<std::endl;
