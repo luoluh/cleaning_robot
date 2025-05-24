@@ -1,0 +1,37 @@
+<launch>
+
+  <!-- Spawn a robot into Gazebo -->
+  <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-file $(find wpr_simulation)/models/wpb_home.model -urdf -x 0.0 -y -0.0 -model wpb_home" />
+
+  <!-- tf -->
+  <arg name="model" default="$(find wpr_simulation)/models/wpb_home.model"/>
+  <param name="robot_description" command="$(find xacro)/xacro $(arg model)" />
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
+  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />
+
+
+  <!--include file="$(find rbx1_nav)/launch/fake_amcl.launch"/-->
+    <!--- Run move_base -->
+    <node pkg="move_base" type="move_base" name="move_base">
+        <rosparam file="$(find wpb_home_tutorials)/nav_lidar/costmap_common_params.yaml" command="load" ns="global_costmap" />
+        <rosparam file="$(find wpb_home_tutorials)/nav_lidar/costmap_common_params.yaml" command="load" ns="local_costmap" />
+        <rosparam file="$(find wpb_home_tutorials)/nav_lidar/global_costmap_params.yaml" command="load" />
+        <rosparam file="$(find wpb_home_tutorials)/nav_lidar/local_costmap_params.yaml" command="load" />
+        <!--param name="base_global_planner" value="global_planner/GlobalPlanner" /--> 
+        <param name="base_local_planner" value="wpbh_local_planner/WpbhLocalPlanner" />
+    </node>
+
+    <!-- Run map server -->
+    <node pkg="map_server" type="map_server" name="map_server" args="$(find wpr_simulation)/maps/map.yaml"/>
+
+    <!--- Run AMcL这里不知道能不能换说实话，好像要scan和odom,继续看有没有这两个。 -->
+    <node pkg="amcl" type="amcl" name="amcl"/>
+  <node pkg="wpr_simulation" type="lidar_filter" name="lidar_filter" />
+
+  <node name="rviz" pkg="rviz" type="rviz" >
+
+  <node pkg="cleaning_robot" type="path_planning_node" respawn="false" name="path_planning_node" output="screen" clear_params="true">
+    <rosparam file="$(find cleaning_robot)/config/costmap_common_params.yaml" command="load" ns="cleaning_costmap" />
+    <rosparam file="$(find cleaning_robot)/config/cleaning_costmap_params.yaml" command="load" />
+  </node>
+</launch>

@@ -1,0 +1,25 @@
+<launch>
+  <!-- include 环境和模型 -->
+  <include file="$(find wpr_simulation)/launch/wpb_stage_robocup.launch" />
+ 
+      <!-- Run map server -->
+    <node pkg="map_server" type="map_server" name="map_server" args="$(find wpr_simulation)/maps/map.yaml"/>
+
+    <!--- Run AMCL -->
+    <node pkg="amcl" type="amcl" name="amcl"/>
+
+    <!--- Run rviz -->
+    <!--node name="rviz" pkg="rviz" type="rviz" args="-d $(find wpr_simulation)/rviz/nav.rviz"/-->
+ <!--node name="rviz" pkg="rviz" type="rviz"/-->
+<node name="rviz" pkg="rviz" type="rviz" args="-d $(find cleaning_robot)/cleaning.rviz"/>
+  <!-- 启动路径规划节点 -->
+  <!--nodenode pkg="cleaning_robot" type="path_planning_node" respawn="false" name="path_planning_node" output="screen" clear_params="true">
+    <rosparam file="$(find cleaning_robot)/config/costmap_common_params.yaml" command="load" ns="cleaning_costmap" />
+    <rosparam file="$(find cleaning_robot)/config/cleaning_costmap_params.yaml" command="load" />
+  </node-->
+
+  <node pkg="cleaning_robot" type="path_planning_node" respawn="false" name="path_planning_node" output="screen" clear_params="true">
+    <rosparam file="$(find cleaning_robot)/config/costmap_common_params.yaml" command="load" ns="cleaning_costmap" />
+    <rosparam file="$(find cleaning_robot)/config/cleaning_costmap_params.yaml" command="load" />
+  </node>
+</launch>
