@@ -5,18 +5,27 @@
       <!-- Run map server -->
     <node pkg="map_server" type="map_server" name="map_server" args="$(find wpr_simulation)/maps/map.yaml"/>
 
-    <!--- Run AMCL -->
+    <!--- Run AMCL -->   
     <node pkg="amcl" type="amcl" name="amcl"/>
 
     <!--- Run rviz -->
     <!--node name="rviz" pkg="rviz" type="rviz" args="-d $(find wpr_simulation)/rviz/nav.rviz"/-->
  <!--node name="rviz" pkg="rviz" type="rviz"/-->
 <node name="rviz" pkg="rviz" type="rviz" args="-d $(find cleaning_robot)/cleaning.rviz"/>
-  <!-- 启动路径规划节点 -->
-  <!--nodenode pkg="cleaning_robot" type="path_planning_node" respawn="false" name="path_planning_node" output="screen" clear_params="true">
-    <rosparam file="$(find cleaning_robot)/config/costmap_common_params.yaml" command="load" ns="cleaning_costmap" />
-    <rosparam file="$(find cleaning_robot)/config/cleaning_costmap_params.yaml" command="load" />
-  </node-->
+
+  <!--- Run move base -->
+  <node pkg="move_base" type="move_base" respawn="false" name="move_base"  output="screen">
+    <rosparam file="$(find wpb_home_tutorials)/nav_lidar/costmap_common_params.yaml" command="load" ns="global_costmap" />
+    <rosparam file="$(find wpb_home_tutorials)/nav_lidar/costmap_common_params.yaml" command="load" ns="local_costmap" />
+    <rosparam file="$(find wpb_home_tutorials)/nav_lidar/local_costmap_params.yaml" command="load" />
+    <rosparam file="$(find wpb_home_tutorials)/nav_lidar/global_costmap_params.yaml" command="load" />
+    <rosparam file="$(find wpb_home_tutorials)/nav_lidar/local_planner_params.yaml" command="load" />
+    <param name="base_global_planner" value="navfn/NavfnROS" /> 
+    <param name="use_dijkstra" value="true"/>
+    <param name="base_local_planner" value="wpbh_local_planner/WpbhLocalPlanner"/>
+    <param name= "controller_frequency" value="10" type="double"/>
+  </node>
+
 <!--包名，可执行文件名，自定义的节点名，后两个基本一样-->
   <node pkg="cleaning_robot" type="cleaning_movebase_node" respawn="false" name="cleaning_covering_node" output="screen" clear_params="true">
     <rosparam file="$(find cleaning_robot)/config/costmap_common_params.yaml" command="load" ns="cleaning_costmap" />
